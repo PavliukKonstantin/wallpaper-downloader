@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "smashingmagazine-wallpaper-downloader"
+version = "0.1.0"
+description = ""
+authors = ["PavliukKonstantin <Pavliuk.Konstantin@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiohttp = "^3.6.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+flake8 = "^3.8.3"
+autopep8 = "^1.5.3"
+isort = "^5.2.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

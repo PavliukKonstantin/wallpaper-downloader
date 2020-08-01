@@ -1,3 +1,4 @@
+import logging
 from contextlib import closing
 from datetime import datetime
 from typing import Union
@@ -5,13 +6,21 @@ from typing import Union
 import requests
 from bs4 import BeautifulSoup
 
+# Init console logger.
+c_logger = logging.getLogger(__name__)
+c_logger.setLevel(logging.INFO)
+c_log = logging.StreamHandler()
+c_formatter = logging.Formatter("%(levelname)s: %(message)s")
+c_log.setFormatter(c_formatter)
+c_logger.addHandler(c_log)
+
 
 # TODO write function which parsed images page html
 # and return dict of links
 def get_images_urls(
     month_year: str,
     resolution: str,
-) -> dict:  # TODO think about it
+) -> dict:
     images_page_url = _get_images_page_url(month_year)
 
     page_html = _get_page_html(images_page_url)
@@ -26,8 +35,9 @@ def get_images_urls(
     if images_urls:
         return images_urls
 
-    # TODO add this in log
-    print("images urls not found")
+    c_logger.info(
+        f"Images for {month_year} with resolution {resolution} not found",
+    )
     raise SystemExit
 
 
@@ -39,8 +49,11 @@ def format_month_year(month_year: str) -> tuple:
         year = date_time.strftime("%Y")
         return month, year
     except ValueError:
-        # TODO add this in log
-        print("Please enter data in right format 'mm-yyyy'")
+        text = (
+            f"Month and year - '{month_year}' entered in incorrect format. ",
+            "Please enter month and year in correct format - 'mm-yyyy'",
+        )
+        c_logger.error("".join(text))
         raise SystemExit
 
 
@@ -48,43 +61,43 @@ def format_month_year(month_year: str) -> tuple:
 def _is_good_response(response: requests.models.Response) -> bool:
     """Return True if the response is HTML, False otherwise."""
     content_type = response.headers.get('Content-Type').lower()
+    response_status_ok = 200
     return (
-        response.status_code == 200 and
+        response.status_code == response_status_ok and
         content_type is not None and
-        content_type.find("html") > -1)
+        content_type.find("html") > -1
+    )
 
 
 # TODO write func get page html
-def _get_page_html(url: str) -> BeautifulSoup:
+def _get_page_html(page_url: str) -> BeautifulSoup:
     try:
-        with closing(requests.get(url)) as response:
+        with closing(requests.get(page_url)) as response:
             if _is_good_response(response):
-                page_html = BeautifulSoup(response.content, "html.parser")
-                return page_html
-            # TODO write this in log
-            print("Response is not good")
+                return BeautifulSoup(response.content, "html.parser")
+            c_logger.error(f"Response for '{page_url}' is wrong")
             raise SystemExit
     except requests.exceptions.RequestException:
-        # TODO add log here
-        print("Can't download page html")
+        c_logger.error(f"Can't download page html for - '{page_url}'")
         raise SystemExit
 
 
 # TODO write func that find url next page
-def _find_next_page_url(page_html: BeautifulSoup) -> str:
+def _find_next_page_url(page_html: BeautifulSoup, month_year: str) -> str:
     next_page_url_tag = page_html.find(
         lambda tag:
         tag.name == "a" and
         tag.parent.name == "li" and
         tag.parent.get("class") and
-        "pagination__next" in tag.parent.get("class")
+        "pagination__next" in tag.parent.get("class"),
     )
 
     try:
         next_page_url = next_page_url_tag.get("href")
     except AttributeError:
-        # TODO add about this in log
-        print("Can't find next page url. Pages is end")
+        c_logger.error(
+            f"Couldn't find wallpaper page for '{month_year}' month and year",
+        )
         raise SystemExit
     else:
         return next_page_url
@@ -116,7 +129,7 @@ def _find_image_urls(
     image_urls_tags = page_html.find_all(
         lambda tag:
         tag.name == 'a' and
-        tag.get("title") == title
+        tag.get("title") == title,
     )
 
     if image_urls_tags:
@@ -129,16 +142,16 @@ def _get_images_page_url(month_year: str) -> str:
     month, year = format_month_year(month_year)
 
     base_url = "https://smashingmagazine.com"
-    images_url = "/category/wallpapers/"
+    wallapper_category_url = "/category/wallpapers/"
 
-    page_html = _get_page_html(f"{base_url}{images_url}")
+    page_html = _get_page_html(f"{base_url}{wallapper_category_url}")
 
     while True:
         images_page_url = _find_images_page_url(page_html, month, year)
         if images_page_url is not None:
             return f"{base_url}{images_page_url}"
 
-        next_page_url = _find_next_page_url(page_html)
+        next_page_url = _find_next_page_url(page_html, month_year)
 
         page_html = _get_page_html(f"{base_url}{next_page_url}")
 
@@ -149,14 +162,13 @@ def _get_image_names(page_html: BeautifulSoup) -> list:
         lambda tag:
         tag.name == "h3" and
         tag.get("id") and
-        tag.get("id") != "Join In Next Month!"
+        tag.get("id") != "Join In Next Month!",
     )
 
     if name_tags:
         return [tag.text.strip() for tag in name_tags]
 
-    # TODO write in log if images_names don't exist
-    print("images not found")
+    c_logger.error("Images names not found in page html")
     raise SystemExit
 
 
@@ -174,10 +186,12 @@ def _find_images_urls(
 
         if image_urls:
             for image_url in image_urls:
-                image_name = image_url.split("/")[-1]
-                images_urls[image_name] = image_url
+                name = image_url.split("/")[-1]
+                images_urls[name] = image_url
         else:
-            # TODO write about it in log
-            # url for image_name in resolution not found
-            pass
+            text = (
+                f"Url for '{image_name} in resolution ",
+                f"{resolution}' not found",
+            )
+            c_logger.info("".join(text))
     return images_urls

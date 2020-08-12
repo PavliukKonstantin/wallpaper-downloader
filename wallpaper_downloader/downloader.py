@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import asyncio
 import logging
 import os
@@ -9,15 +11,30 @@ from wallpaper_downloader import site_parser
 
 
 class WallpaperDownloader:
+    """Download wallpapers from 'smashingmagazine.com'."""
+
     def __init__(
         self,
         month_year: str,
         resolution: str = '1920x1080',
-        destination_folder_path: str = "smashingmagazine",
+        destination_directory_path: str = "smashingmagazine",
     ) -> None:
+        """Initialize attributes of the class and the console logger.
+
+        Args:
+            month_year (str): month and year of downloadable wallpapers
+                in format 'mm-yyyy'.
+            resolution (str, optional): resolution of downloadable wallpapers.
+                Defaults to '1920x1080'.
+            destination_directory_path (str, optional): the directory where
+                wallpapers will be downloaded.
+                Defaults to './smashingmagazine'.
+        """
         self.month_year = month_year
         self.resolution = resolution
-        self.destination_folder_path = os.path.abspath(destination_folder_path)
+        self.destination_directory_path = os.path.abspath(
+            destination_directory_path,
+        )
 
         # Init console logger.
         self.c_logger = logging.getLogger(__name__)
@@ -27,74 +44,104 @@ class WallpaperDownloader:
         self.c_log.setFormatter(self.c_formatter)
         self.c_logger.addHandler(self.c_log)
 
-    def _get_folder_path(self, with_calendar: bool) -> str:
+    def _get_directory_path(self, with_calendar: bool) -> str:
+        """Get the path to the directory where wallpapers will be downloaded.
+
+        Args:
+            with_calendar (bool): defines the name of the directory.
+
+        Returns:
+            str: absolute path of directory.
+        """
         with_without = "with" if with_calendar else "without"
         month, year = site_parser.format_month_year(self.month_year)
         return os.path.join(
-            self.destination_folder_path,
+            self.destination_directory_path,
             f"{month}-{year} ({with_without}-calendar)",
         )
 
     def _get_wallpaper_path(self, wallpaper_name: str) -> str:
+        """Get the absolute path where the wallpaper will be created.
+
+        Args:
+            wallpaper_name (str): wallpaper name.
+
+        Returns:
+            str: absolute wallpaper path.
+        """
         wallpaper_with_calendar = wallpaper_name.find("-cal-") > -1
         return os.path.join(
-            self._get_folder_path(
-                wallpaper_with_calendar,
-            ),
+            self._get_directory_path(wallpaper_with_calendar),
             wallpaper_name,
         )
 
-    # TODO write func that create 1 folder
-    def _create_folder(self, folder_path: str) -> None:
-        if not os.path.isdir(folder_path):
+    def _create_directory(self, directory_path: str) -> None:
+        """Create the directory.
+
+        Args:
+            directory_path (str): absolute directory path.
+
+        Raises:
+            SystemExit: if can't create a directory or
+                can't create a file in a directory.
+        """
+        if not os.path.isdir(directory_path):
             try:
-                os.mkdir(folder_path)
+                os.mkdir(directory_path)
             except OSError:
                 self.c_logger.error(
-                    f"Can't create folder with path - '{folder_path}'.",
+                    f"Can't create directory with path - '{directory_path}'.",
                 )
                 raise SystemExit
-        tmp_file_path = os.path.join(folder_path, "tmp_file.txt")
+        tmp_file_path = os.path.join(directory_path, "tmp_file.txt")
         try:
             tmp_file = open(tmp_file_path, "w")
             tmp_file.close()
             os.remove(tmp_file_path)
         except OSError:
             self.c_logger.error(
-                f"Can't write in folder with path - '{folder_path}'.",
+                f"Can't write in directory with path - '{directory_path}'.",
             )
             raise SystemExit
 
-    # TODO write func that create folders for wallpapers
-    def _create_folders(self) -> None:
-        # """Check the directory to which the file is copied.
-
-        # Check existence of destination directory and check write permission.
-        # If the directory doesn't exist, an attempt is made to create it.
-        # """
-        folder_to_wallpapers_with_calendar = self._get_folder_path(
+    def _create_directories(self) -> None:
+        """Create directories where wallpapers will be downloaded."""
+        directory_to_wallpapers_with_calendar = self._get_directory_path(
             with_calendar=True,
         )
-        folder_to_wallpapers_without_calendar = self._get_folder_path(
+        directory_to_wallpapers_without_calendar = self._get_directory_path(
             with_calendar=False,
         )
-        folders_paths = (
-            self.destination_folder_path,
-            folder_to_wallpapers_with_calendar,
-            folder_to_wallpapers_without_calendar,
+        directories_paths = (
+            self.destination_directory_path,
+            directory_to_wallpapers_with_calendar,
+            directory_to_wallpapers_without_calendar,
         )
 
-        for folder_path in folders_paths:
-            self._create_folder(folder_path)
+        for directory_path in directories_paths:
+            self._create_directory(directory_path)
 
-    # TODO write func that write wallpaper in file
     def _write_wallpaper(self, wallpaper_data: bytes, wallpaper_path: str):
+        """Write wallpaper in a file.
+
+        Args:
+            wallpaper_data (bytes): the raw wallpaper data.
+            wallpaper_path (str): the absolute path of the directory where
+                the image will be created.
+        """
         with open(wallpaper_path, "wb") as wallpaper:
             wallpaper.write(wallpaper_data)
 
-    # TODO write the function checking the correctness of response
     def _is_good_response(self, response: aiohttp.ClientSession) -> bool:
-        """Return True if the response seems to be 'wallpaper'."""
+        """Check the correctness of the response.
+
+        Args:
+            response (aiohttp.ClientSession): response of
+                aiohttp.ClientSession.get(url).
+
+        Returns:
+            bool: True if response is good.
+        """
         content_type = response.headers.get('Content-Type').lower()
         response_status_ok = 200
         return (
@@ -103,13 +150,19 @@ class WallpaperDownloader:
             content_type.find("image") > -1
         )
 
-    # TODO write func that download one wallpaper
     async def _download_wallpaper(
         self,
         wallpaper_path: str,
         wallpaper_url: str,
         session: aiohttp.ClientSession,
     ) -> None:
+        """Download one wallpaper.
+
+        Args:
+            wallpaper_path (str): the absolute path of the directory where
+                the image will be created.
+            wallpaper_url (str): URL for downloading the image.
+        """
         async with session.get(wallpaper_url) as response:
             if self._is_good_response(response):
                 wallpaper_data = await response.read()
@@ -120,8 +173,13 @@ class WallpaperDownloader:
                     "Wallpaper not loaded."
                 )
 
-    # TODO write func that download wallpapers
     async def _downloader_event_loop(self, wallpapers_urls: dict) -> None:
+        """Event loop for async download wallpapers.
+
+        Args:
+            wallpapers_urls (dict): wallpapers urls in
+                '{wallpaper_name: wallpaper_url}' format.
+        """
         tasks = []
         connections_limit = 20
         connector = aiohttp.TCPConnector(limit=connections_limit)
@@ -141,16 +199,17 @@ class WallpaperDownloader:
             await asyncio.gather(*tasks)
 
     def download_wallpapers(self) -> None:
+        """Download all wallpapers with initialized parameters."""
         wallpapers_urls = site_parser.get_wallpapers_urls(
             self.month_year,
             self.resolution,
         )
 
-        self._create_folders()
+        self._create_directories()
 
-        self.c_logger.info("Download wallpapers started.")
+        self.c_logger.info("Downloading of wallpapers is started.")
         asyncio.run(self._downloader_event_loop(wallpapers_urls))
-        self.c_logger.info("Download wallpapers finished.")
+        self.c_logger.info("Downloading of wallpapers is finished.")
 
 
 if __name__ == "__main__":
@@ -159,7 +218,7 @@ if __name__ == "__main__":
         "--month-year",
         type=str,
         required=True,
-        help="Month and year downloadable wallpapers",
+        help="Month and year of downloadable wallpapers",
     )
     @click.option(
         "--resolution",
@@ -169,21 +228,23 @@ if __name__ == "__main__":
         help="Resolution of downloadable wallpapers",
     )
     @click.option(
-        "--destination_folder_path",
+        "--dest_path",
         type=str,
         default="smashingmagazine",
         show_default=True,
-        help="Download wallpapers destination path",
+        help="Destination path for downloadable wallpapers",
     )
     def download_wallpapers(
         month_year,
         resolution,
-        destination_folder_path,
-    ):
+        dest_path,
+    ) -> None:
+        """CLI for download wallpaper from smashingmagazine.com."""
         downloader = WallpaperDownloader(
             month_year,
             resolution,
-            destination_folder_path)
+            dest_path,
+        )
         downloader.download_wallpapers()
 
     download_wallpapers()

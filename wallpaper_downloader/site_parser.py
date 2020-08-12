@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import logging
 from contextlib import closing
 from datetime import datetime
@@ -15,8 +17,18 @@ c_log.setFormatter(c_formatter)
 c_logger.addHandler(c_log)
 
 
-# TODO write func formating month and year
 def format_month_year(month_year: str) -> tuple:
+    """Convert month and year in correct format for parsing.
+
+    Args:
+        month_year (str): month and year in 'mm-yyyy' format.
+
+    Raises:
+        SystemExit: if month_year has incorrect format.
+
+    Returns:
+        tuple: month and year in ('july', '2020') format.
+    """
     try:
         date_time = datetime.strptime(month_year, "%m-%Y")
         month = date_time.strftime("%B").lower()
@@ -24,15 +36,21 @@ def format_month_year(month_year: str) -> tuple:
         return month, year
     except ValueError:
         c_logger.error(
-            f"Month and year - '{month_year}' entered in incorrect format. "
+            f"Month and year '{month_year}' were entered in incorrect format. "
             "Please enter month and year in correct format - 'mm-yyyy'."
         )
         raise SystemExit
 
 
-# TODO write the function checking the correctness of response
 def _is_good_response(response: requests.models.Response) -> bool:
-    """Return True if the response is HTML, False otherwise."""
+    """Check the correctness of response.
+
+    Args:
+        response (requests.models.Response): response of request.get(url)
+
+    Returns:
+        bool: True if response is OK.
+    """
     content_type = response.headers.get('Content-Type').lower()
     response_status_ok = 200
     return (
@@ -42,21 +60,43 @@ def _is_good_response(response: requests.models.Response) -> bool:
     )
 
 
-# TODO write func get page html
 def _get_page_html(page_url: str) -> BeautifulSoup:
+    """Get HTML for URL.
+
+    Args:
+        page_url (str): URL of the page.
+
+    Raises:
+        SystemExit: response is not OK or raise RequestException.
+
+    Returns:
+        BeautifulSoup: HTML from the page.
+    """
     try:
         with closing(requests.get(page_url)) as response:
-            if _is_good_response(response):
-                return BeautifulSoup(response.content, "html.parser")
-            c_logger.error(f"Response for '{page_url}' is wrong.")
-            raise SystemExit
+            if not _is_good_response(response):
+                c_logger.error(f"Response for '{page_url}' is wrong.")
+                raise SystemExit
     except requests.exceptions.RequestException:
-        c_logger.error(f"Can't download page html for - '{page_url}'.")
+        c_logger.error(f"Can't download HTML from - '{page_url}'.")
         raise SystemExit
+    else:
+        return BeautifulSoup(response.content, "html.parser")
 
 
-# TODO write func that find url next page
 def _find_next_page_url(page_html: BeautifulSoup, month_year: str) -> str:
+    """Parse HTML and search the URL of the next page.
+
+    Args:
+        page_html (BeautifulSoup): HTML for parsing.
+        month_year (str): month and year in 'mm-yyyy' format.
+
+    Raises:
+        SystemExit: if the URL of the next page does not exist.
+
+    Returns:
+        str: URL of the next page.
+    """
     next_page_url_tag = page_html.find(
         lambda tag:
         tag.name == "a" and
@@ -77,12 +117,22 @@ def _find_next_page_url(page_html: BeautifulSoup, month_year: str) -> str:
         return next_page_url
 
 
-# TODO write func that find wallpapers page url
 def _find_wallpapers_page_url(
     page_html: BeautifulSoup,
     month: str,
     year: str,
 ) -> Union[str, None]:
+    """Parse HTML and search the URL of the page with wallpapers.
+
+    Args:
+        page_html (BeautifulSoup): HTML for parsing.
+        month (str): month in full name format ('august').
+        year (str): year in four-digit format ('2020').
+
+    Returns:
+        Union[str, None]: URL of wallpapers page or
+            'None' if URL does not exist.
+    """
     wallpapers_page_url_tag = page_html.find(
         lambda tag:
         tag.name == "a" and
@@ -95,11 +145,23 @@ def _find_wallpapers_page_url(
     return None
 
 
-# TODO write func that find wallpaper url
 def _find_wallpaper_urls(
     page_html: BeautifulSoup,
     title: str,
 ) -> Union[list, None]:
+    """Parse HTML and search URLs of the wallpaper.
+
+    One wallpaper has two URLs. For wallpapers with and without calendar.
+
+    Args:
+        page_html (BeautifulSoup): HTML for parsing.
+        title (str): title in 'Wallpaper name - resolution' format.
+            Example - 'Beautiful image - 1920x1080'.
+
+    Returns:
+        Union[list, None]: URLs of wallpapers or
+            'None' if URLs of wallpapers does not exist.
+    """
     wallpaper_urls_tags = page_html.find_all(
         lambda tag:
         tag.name == "a" and
@@ -111,8 +173,19 @@ def _find_wallpaper_urls(
     return None
 
 
-# TODO write func that find newest wallpapers page url
 def _get_newest_wallpapers_month_year(page_html: BeautifulSoup) -> tuple:
+    """Parse HTML and search month and year of the newest wallpapers.
+
+    Args:
+        page_html (BeautifulSoup): HTML for parsing.
+
+    Raises:
+        SystemExit: if the URL of the newest wallpapers does not exist.
+
+    Returns:
+        tuple: month and year the newest wallpapers
+            in format ('july', '2020').
+    """
     wallpapers_url_tag = page_html.find(
         lambda tag:
         tag.name == 'a' and
@@ -122,20 +195,32 @@ def _get_newest_wallpapers_month_year(page_html: BeautifulSoup) -> tuple:
     )
     if wallpapers_url_tag:
         wallpapers_url = wallpapers_url_tag.get("href")
-        month = wallpapers_url.split("-")[-2]
-        year = wallpapers_url.split("-")[-1].rstrip("/")
+        divided_wallpapers_url = wallpapers_url.split("-")
+        month = divided_wallpapers_url[-2]
+        year = divided_wallpapers_url[-1].rstrip("/")
         return month, year
 
-    c_logger.error("Something wrong. Couldn't find url the newest wallpapers.")
+    c_logger.error(
+        "Something went wrong. Couldn't find url the newest wallpapers.",
+    )
     raise SystemExit
 
 
-# TODO write func that compare request date with newest wallpapers date
 def is_month_year_in_future(
     page_html: BeautifulSoup,
     month: str,
     year: str,
 ) -> bool:
+    """Return result of compare request date to the newest wallpapers date.
+
+    Args:
+        page_html (BeautifulSoup): HTML for parsing.
+        month (str): month in full name format ('august').
+        year (str): year in four-digit format ('2020').
+
+    Returns:
+        bool: True if requested date newer than the newest wallpapers date.
+    """
     newest_wallpapers_month_year = _get_newest_wallpapers_month_year(page_html)
     newest_dt = datetime.strptime(
         "-".join(newest_wallpapers_month_year),
@@ -145,8 +230,18 @@ def is_month_year_in_future(
     return requested_dt > newest_dt
 
 
-# TODO write function convert month-year to url
 def _get_wallpapers_page_url(month_year: str) -> str:
+    """Search in 'smashingmagazine.com' URL with requested wallpapers.
+
+    Args:
+        month_year (str): month and year in 'mm-yyyy' format.
+
+    Raises:
+        SystemExit: if the URL of wallpapers does not exist.
+
+    Returns:
+        str: URL of the page with wallpapers.
+    """
     base_url = "https://smashingmagazine.com"
     wallapper_category_url = "/category/wallpapers/"
 
@@ -155,7 +250,7 @@ def _get_wallpapers_page_url(month_year: str) -> str:
 
     if is_month_year_in_future(page_html, month, year):
         c_logger.error(
-            f"Wallpapers for '{month}-{year}' doesn't yet exist. "
+            f"Wallpapers for '{month}-{year}' does not exist yet. "
             "You can't download wallpapers from the future."
         )
         raise SystemExit
@@ -169,28 +264,48 @@ def _get_wallpapers_page_url(month_year: str) -> str:
         page_html = _get_page_html(f"{base_url}{next_page_url}")
 
 
-# TODO write a function that gets wallpapers names
-def _get_wallpapers_names(page_html: BeautifulSoup) -> list:
+def _find_wallpapers_names(page_html: BeautifulSoup) -> list:
+    """Parse HTML and search wallpapers names.
+
+    Args:
+        page_html (BeautifulSoup): HTML for parsing.
+
+    Raises:
+        SystemExit: if wallpapers names does not exist.
+
+    Returns:
+        list: wallpapers names
+    """
     name_tags = page_html.find_all(
         lambda tag:
         tag.name == "h3" and
         tag.get("id") and
-        tag.get("id") != "Join In Next Month!",
+        tag.text.find("Join In Next Month!") == -1
     )
 
     if name_tags:
         return [tag.text.strip() for tag in name_tags]
 
-    c_logger.error("Wallpapers names not found in page html.")
+    c_logger.error("Wallpapers names weren't found in the HTML.")
     raise SystemExit
 
 
-# TODO write a function that gets wallpapers urls
 def _find_wallpapers_urls(
     page_html: BeautifulSoup,
     wallpapers_names: list,
     resolution: str,
 ) -> dict:
+    """Parse HTML and search wallpapers URLs.
+
+    Args:
+        page_html (BeautifulSoup): HTML for parsing.
+        wallpapers_names (list): wallpapers names.
+        resolution (str): wallpapers resolution in 'width'x'height' format.
+            Example - '1920x1080'.
+
+    Returns:
+        dict: URLs of wallpapers in '{wallpaper_name: wallpaper_url}' format.
+    """
     wallpapers_urls = {}
 
     for wallpaper_name in wallpapers_names:
@@ -203,29 +318,42 @@ def _find_wallpapers_urls(
                 wallpapers_urls[name] = wallpaper_url
         else:
             c_logger.warning(
-                f"Url for '{wallpaper_name}' in resolution "
+                f"URL for '{wallpaper_name}' in resolution "
                 f"{resolution} not found."
             )
     return wallpapers_urls
 
 
-# TODO write function which parsed wallpapers page html
-# and return dict of links
 def get_wallpapers_urls(
     month_year: str,
     resolution: str,
 ) -> dict:
+    """Return URLs of wallpapers found in the HTML.
+
+    Args:
+        month_year (str): month and year in 'mm-yyyy' format.
+        resolution (str): wallpapers resolution in 'width'x'height' format.
+            Example - '1920x1080'
+
+    Raises:
+        SystemExit: if URLs of wallpapers with requested parameters
+            does not exist.
+
+    Returns:
+        dict: URLs of wallpapers in
+            '{wallpaper_filename: wallpaper_url}' format.
+    """
     c_logger.info("Site parsing started.")
     wallpapers_page_url = _get_wallpapers_page_url(month_year)
     page_html = _get_page_html(wallpapers_page_url)
-    wallpaper_names = _get_wallpapers_names(page_html)
+    wallpaper_names = _find_wallpapers_names(page_html)
     wallpapers_urls = _find_wallpapers_urls(
         page_html,
         wallpaper_names,
         resolution,
     )
     if wallpapers_urls:
-        c_logger.info("Site parsing successfully completed.")
+        c_logger.info("Parsing successfully completed.")
         return wallpapers_urls
 
     c_logger.info(

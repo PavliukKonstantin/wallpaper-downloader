@@ -14,7 +14,8 @@ from requests.models import Response
 
 @pytest.fixture()
 def get_page_html_from_file():
-    """Fixture. Get the HTML from the file.
+    """
+    Fixture. Get the HTML from the file.
 
     Name of the directory is constant. Only file name can be specified.
 
@@ -38,7 +39,8 @@ def get_page_html_from_file():
 
 @pytest.fixture()
 def get_sync_response_from_url():
-    """Fixture. Get response for URL.
+    """
+    Fixture. Get response for URL.
 
     Args:
         page_url (str): the URL of the page from which
@@ -55,7 +57,8 @@ def get_sync_response_from_url():
 
 @pytest.fixture()
 def get_wallpapers_urls_from_file() -> dict:
-    """Fixture. Get URLs of the wallpapers from file.
+    """
+    Fixture. Get URLs of the wallpapers from file.
 
     Name of the directory and the filename are constants.
 
@@ -74,7 +77,8 @@ def get_wallpapers_urls_from_file() -> dict:
 
 @pytest.fixture()
 def get_wallpapers_names_from_file() -> dict:
-    """Fixture. Get names of wallpapers from file.
+    """
+    Fixture. Get names of wallpapers from file.
 
     Name of the directory and filename are constants.
 
@@ -92,7 +96,8 @@ def get_wallpapers_names_from_file() -> dict:
 
 @pytest.fixture()
 def get_wallpapers_filenames(get_wallpapers_urls_from_file) -> tuple:
-    """Fixture. Get names of wallpapers files.
+    """
+    Fixture. Get names of wallpapers files.
 
     Args:
         get_wallpapers_urls_from_file (Fixture): fixture that return
@@ -107,7 +112,7 @@ def get_wallpapers_filenames(get_wallpapers_urls_from_file) -> tuple:
     with_calendar_wallpapers_files_names = []
     without_calendar_wallpapers_files_names = []
     for wallapper_file_name in wallpapers_files_names:
-        if wallapper_file_name.find("-cal-") > -1:
+        if "-cal-" in wallapper_file_name:
             with_calendar_wallpapers_files_names.append(wallapper_file_name)
         else:
             without_calendar_wallpapers_files_names.append(wallapper_file_name)
@@ -119,7 +124,8 @@ def get_wallpapers_filenames(get_wallpapers_urls_from_file) -> tuple:
 
 @pytest.fixture()
 def get_async_response_from_url():
-    """Fixture. Get response for URL.
+    """
+    Fixture. Get response for URL.
 
     Args:
         page_url (str): the URL of the page from which
@@ -136,7 +142,8 @@ def get_async_response_from_url():
 
 @pytest.fixture()
 def get_temp_directory_path():
-    """Fixture. Get the path of the temporary directory.
+    """
+    Fixture. Get the path of the temporary directory.
 
     The directory is used as temporary storage of files for tests.
 
@@ -152,7 +159,8 @@ def get_temp_directory_path():
 
 @pytest.fixture()
 def get_wallpaper_path(get_temp_directory_path):
-    """Fixture. Get the path to the wallpaper.
+    """
+    Fixture. Get the path to the wallpaper.
 
     Args:
         get_temp_directory_path (Fixture): fixture that return the absolute
@@ -169,7 +177,8 @@ def get_wallpaper_path(get_temp_directory_path):
 
 @pytest.fixture()
 def create_delete_temp_directory(get_temp_directory_path):
-    """Fixture. Create temporary directory before test and delete after test.
+    """
+    Fixture. Create temporary directory before test and delete after test.
 
     Args:
         get_temp_directory_path (Fixture): fixture that return the absolute
@@ -186,7 +195,8 @@ def create_delete_temp_directory(get_temp_directory_path):
 
 @pytest.fixture()
 def delete_temp_directory(get_temp_directory_path):
-    """Fixture. Delete temporary directory after test.
+    """
+    Fixture. Delete temporary directory after test.
 
     Args:
         get_temp_directory_path (Fixture): fixture that return the absolute

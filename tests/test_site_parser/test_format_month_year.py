@@ -4,7 +4,8 @@ from wallpaper_downloader import site_parser
 
 
 def test_good_month_year_format():
-    """Test '_format_month_year' function of site_parser module.
+    """
+    Test '_format_month_year' function of site_parser module.
 
     Function is tested with the month and year in good format.
     """
@@ -13,7 +14,8 @@ def test_good_month_year_format():
 
 
 def test_bad_month_year_format():
-    """Test '_format_month_year' function of site_parser module.
+    """
+    Test '_format_month_year' function of site_parser module.
 
     Function is tested with the month and year in bad format.
     """

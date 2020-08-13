@@ -6,7 +6,8 @@ from wallpaper_downloader import site_parser
 
 
 def test_with_wallpapers_page_url(get_page_html_from_file):
-    """Test '_find_wallpapers_page_url' function of site_parser module.
+    """
+    Test '_find_wallpapers_page_url' function of site_parser module.
 
     Function is tested with the HTML where URL the wallpapers is exists.
 
@@ -29,7 +30,8 @@ def test_with_wallpapers_page_url(get_page_html_from_file):
 
 
 def test_without_wallpapers_page_url(get_page_html_from_file):
-    """Test '_find_wallpapers_page_url' function of site_parser module.
+    """
+    Test '_find_wallpapers_page_url' function of site_parser module.
 
     Function is tested with the HTML where URL the wallpapers is not exists.
 

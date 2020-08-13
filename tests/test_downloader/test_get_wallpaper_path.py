@@ -6,7 +6,8 @@ from wallpaper_downloader.downloader import WallpaperDownloader
 
 
 def test_wallpaper_path_with_calendar():
-    """Test '_get_wallpaper_path' method of WallpaperDownloader class.
+    """
+    Test '_get_wallpaper_path' method of WallpaperDownloader class.
 
     Method is tested for the wallpaper with calendar.
     """
@@ -22,7 +23,8 @@ def test_wallpaper_path_with_calendar():
 
 
 def test_wallpaper_path_without_calendar():
-    """Test '_get_wallpaper_path' method of WallpaperDownloader class.
+    """
+    Test '_get_wallpaper_path' method of WallpaperDownloader class.
 
     Method is tested for the wallpaper without calendar.
     """

@@ -44,7 +44,8 @@ async def test_bad_wallpaper_url(
     get_wallpaper_path,
     create_delete_temp_directory,
 ):
-    """Test '_download_wallpaper' method of WallpaperDownloader class.
+    """
+    Test '_download_wallpaper' method of WallpaperDownloader class.
 
     Method is tested with the URL on which a wallpaper non exists.
 

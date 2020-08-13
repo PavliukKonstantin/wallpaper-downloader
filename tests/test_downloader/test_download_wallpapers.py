@@ -10,7 +10,8 @@ def test_with_good_arguments(
     get_temp_directory_path,
     create_delete_temp_directory,
 ):
-    """Test 'download_wallpapers' method of WallpaperDownloader class.
+    """
+    Test 'download_wallpapers' method of WallpaperDownloader class.
 
     Method is tested with the good parameters and
     checks the actual download of the files.

@@ -4,7 +4,8 @@ from wallpaper_downloader import site_parser
 
 
 def test_page_with_newest_wallpapers_month_year(get_page_html_from_file):
-    """Test '_get_newest_wallpapers_month_year' function of site_parser module.
+    """
+    Test '_get_newest_wallpapers_month_year' function of site_parser module.
 
     Function is tested with the page HTML where
     the newest wallpapers header is exists.
@@ -20,7 +21,8 @@ def test_page_with_newest_wallpapers_month_year(get_page_html_from_file):
 
 
 def test_page_without_newest_wallpapers_month_year(get_page_html_from_file):
-    """Test '_get_newest_wallpapers_month_year' function of site_parser module.
+    """
+    Test '_get_newest_wallpapers_month_year' function of site_parser module.
 
     Function is tested with the HTML where
     the newest wallpapers header is not exists.

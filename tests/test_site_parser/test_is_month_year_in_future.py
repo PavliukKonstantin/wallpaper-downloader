@@ -4,7 +4,8 @@ from wallpaper_downloader import site_parser
 
 
 def test_with_month_year_in_future(get_page_html_from_file):
-    """Test '_is_month_year_in_future' function of site_parser module.
+    """
+    Test '_is_month_year_in_future' function of site_parser module.
 
     Function is tested with the month and year more than the newest
     month and year in the HTML.
@@ -22,7 +23,8 @@ def test_with_month_year_in_future(get_page_html_from_file):
 
 
 def test_with_month_year_in_past(get_page_html_from_file):
-    """Test '_is_month_year_in_future' function of site_parser module.
+    """
+    Test '_is_month_year_in_future' function of site_parser module.
 
     Function is tested with the month and year less than the newest
     month and year in the HTML.

@@ -7,7 +7,8 @@ def test_page_with_wallpapers_names(
     get_page_html_from_file,
     get_wallpapers_names_from_file,
 ):
-    """Test '_find_wallpapers_names' function of site_parser module.
+    """
+    Test '_find_wallpapers_names' function of site_parser module.
 
     Function is tested with the HTML where names of wallpapers are exist.
 
@@ -23,7 +24,8 @@ def test_page_with_wallpapers_names(
 
 
 def test_page_without_wallpapers_names(get_page_html_from_file):
-    """Test '_find_wallpapers_names' function of site_parser module.
+    """
+    Test '_find_wallpapers_names' function of site_parser module.
 
     Function is tested with the HTML where names of wallpapers are not exist.
 

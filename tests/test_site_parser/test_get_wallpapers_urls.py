@@ -4,7 +4,8 @@ from wallpaper_downloader import site_parser
 
 
 def test_with_good_arguments(get_wallpapers_urls_from_file):
-    """Test '_get_wallpapers_urls' function of site_parser module.
+    """
+    Test '_get_wallpapers_urls' function of site_parser module.
 
     Function is tested with the correct 'month_year' and
     'resolution' arguments.
@@ -19,7 +20,8 @@ def test_with_good_arguments(get_wallpapers_urls_from_file):
 
 
 def test_with_bad_resolution():
-    """Test '_get_wallpapers_urls' function of site_parser module.
+    """
+    Test '_get_wallpapers_urls' function of site_parser module.
 
     Function is tested with the incorrect 'resolution' argument.
     """

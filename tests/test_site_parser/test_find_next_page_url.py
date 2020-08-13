@@ -4,7 +4,8 @@ from wallpaper_downloader import site_parser
 
 
 def test_page_with_next_page_url(get_page_html_from_file):
-    """Test '_find_next_page_url' function of site_parser module.
+    """
+    Test '_find_next_page_url' function of site_parser module.
 
     Function is tested with the HTML where URL of the next page is exists.
 
@@ -18,7 +19,8 @@ def test_page_with_next_page_url(get_page_html_from_file):
 
 
 def test_page_without_next_page_url(get_page_html_from_file):
-    """Test '_find_next_page_url' function of site_parser module.
+    """
+    Test '_find_next_page_url' function of site_parser module.
 
     Function is tested with the HTML where URL of the next page is not exists.
 
@@ -29,4 +31,4 @@ def test_page_without_next_page_url(get_page_html_from_file):
     try:
         site_parser._find_next_page_url(page_html, "07-2020")
     except SystemExit:
-        assert SystemExit
+        assert True

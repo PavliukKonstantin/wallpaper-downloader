@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 
 def test_good_page_url():
-    """Test '_get_page_html' function of site_parser module.
+    """
+    Test '_get_page_html' function of site_parser module.
 
     Function is tested with the good URL of the page.
     """
@@ -16,7 +17,8 @@ def test_good_page_url():
 
 
 def test_bad_page_url():
-    """Test '_get_page_html' function of site_parser module.
+    """
+    Test '_get_page_html' function of site_parser module.
 
     Function is tested with the good URL of the page.
     """

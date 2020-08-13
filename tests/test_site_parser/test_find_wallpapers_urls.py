@@ -8,7 +8,8 @@ def test_page_with_wallpapers_urls(
     get_wallpapers_urls_from_file,
     get_wallpapers_names_from_file,
 ):
-    """Test '_find_wallpapers_urls' function of site_parser module.
+    """
+    Test '_find_wallpapers_urls' function of site_parser module.
 
     Function is tested with the HTML where URLs of wallpapers are exist.
 
@@ -34,7 +35,8 @@ def test_page_without_wallpapers_urls(
     get_page_html_from_file,
     get_wallpapers_names_from_file,
 ):
-    """Test '_find_wallpapers_urls' function of site_parser module.
+    """
+    Test '_find_wallpapers_urls' function of site_parser module.
 
     Function is tested with the HTML where URLs of wallpapers are not exist.
 

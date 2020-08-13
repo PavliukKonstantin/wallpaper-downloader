@@ -4,7 +4,8 @@ from wallpaper_downloader import site_parser
 
 
 def test_good_response(get_sync_response_from_url):
-    """Test '_is_good_response' function of site_parser module.
+    """
+    Test '_is_good_response' function of site_parser module.
 
     Function is tested with the good response.
 
@@ -20,7 +21,8 @@ def test_good_response(get_sync_response_from_url):
 
 
 def test_bad_response(get_sync_response_from_url):
-    """Test '_is_good_response' function of site_parser module.
+    """
+    Test '_is_good_response' function of site_parser module.
 
     Function is tested with the bad response.
 
@@ -36,7 +38,8 @@ def test_bad_response(get_sync_response_from_url):
 
 
 def test_response_with_non_html_content(get_sync_response_from_url):
-    """Test '_is_good_response' function of site_parser module.
+    """
+    Test '_is_good_response' function of site_parser module.
 
     Function is tested with the good response with not image content.
 

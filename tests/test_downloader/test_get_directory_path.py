@@ -6,7 +6,8 @@ from wallpaper_downloader.downloader import WallpaperDownloader
 
 
 def test_directory_path_with_calendar():
-    """Test '_get_directory_path' method of WallpaperDownloader class.
+    """
+    Test '_get_directory_path' method of WallpaperDownloader class.
 
     Method is tested for the directory with calendar.
     """
@@ -20,7 +21,8 @@ def test_directory_path_with_calendar():
 
 
 def test_directory_path_without_calendar():
-    """Test '_get_directory_path' method of WallpaperDownloader class.
+    """
+    Test '_get_directory_path' method of WallpaperDownloader class.
 
     Method is tested for the directory without calendar.
     """

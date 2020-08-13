@@ -7,7 +7,8 @@ from wallpaper_downloader.downloader import WallpaperDownloader
 
 @pytest.mark.asyncio
 async def test_good_response(get_async_response_from_url):
-    """Test '_is_good_response' method of WallpaperDownloader class.
+    """
+    Test '_is_good_response' method of WallpaperDownloader class.
 
     Method is tested with the good response.
 
@@ -26,7 +27,8 @@ async def test_good_response(get_async_response_from_url):
 
 @pytest.mark.asyncio
 async def test_bad_response(get_async_response_from_url):
-    """Test '_is_good_response' method of WallpaperDownloader class.
+    """
+    Test '_is_good_response' method of WallpaperDownloader class.
 
     Method is tested with the bad response.
 
@@ -44,7 +46,8 @@ async def test_bad_response(get_async_response_from_url):
 
 @pytest.mark.asyncio
 async def test_response_with_non_image_content(get_async_response_from_url):
-    """Test '_is_good_response' method of WallpaperDownloader class.
+    """
+    Test '_is_good_response' method of WallpaperDownloader class.
 
     Method testing with the good response to not HTML content.
 

@@ -6,7 +6,8 @@ from wallpaper_downloader.downloader import WallpaperDownloader
 
 
 def test_non_exist_directory(get_temp_directory_path, delete_temp_directory):
-    """Test '_create_directory' method of WallpaperDownloader class.
+    """
+    Test '_create_directory' method of WallpaperDownloader class.
 
     Method is tested with the non exist directory.
 
@@ -26,7 +27,8 @@ def test_exist_directory(
     get_temp_directory_path,
     create_delete_temp_directory,
 ):
-    """Test '_create_directory' method of WallpaperDownloader class.
+    """
+    Test '_create_directory' method of WallpaperDownloader class.
 
     Method is tested with the exist directory.
 

@@ -28,3 +28,5 @@ def test_bad_page_url():
         )
     except SystemExit:
         assert True
+    else:
+        assert False

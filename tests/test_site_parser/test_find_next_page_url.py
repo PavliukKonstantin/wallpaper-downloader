@@ -32,3 +32,5 @@ def test_page_without_next_page_url(get_page_html_from_file):
         site_parser._find_next_page_url(page_html, "07-2020")
     except SystemExit:
         assert True
+    else:
+        assert False

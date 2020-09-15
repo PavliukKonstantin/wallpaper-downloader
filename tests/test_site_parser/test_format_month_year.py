@@ -23,3 +23,5 @@ def test_bad_month_year_format():
         site_parser.format_month_year("07-20")
     except SystemExit:
         assert True
+    else:
+        assert False

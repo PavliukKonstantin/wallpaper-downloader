@@ -29,3 +29,5 @@ def test_with_bad_resolution():
         site_parser.get_wallpapers_urls("07-2020", "1920x10")
     except SystemExit:
         assert True
+    else:
+        assert False

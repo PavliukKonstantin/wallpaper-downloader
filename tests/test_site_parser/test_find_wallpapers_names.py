@@ -34,8 +34,10 @@ def test_page_without_wallpapers_names(get_page_html_from_file):
         get_wallpapers_names_from_file (Fixture): fixture that return
             names of wallpapers.
     """
-    page_html = get_page_html_from_file("page_with_wallpapers.html")
+    page_html = get_page_html_from_file("first_main_page.html")
     try:
         site_parser._find_wallpapers_names(page_html)
     except SystemExit:
         assert True
+    else:
+        assert False

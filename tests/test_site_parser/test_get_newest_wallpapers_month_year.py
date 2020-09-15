@@ -35,3 +35,5 @@ def test_page_without_newest_wallpapers_month_year(get_page_html_from_file):
         site_parser._get_newest_wallpapers_month_year(page_html)
     except SystemExit:
         assert True
+    else:
+        assert False

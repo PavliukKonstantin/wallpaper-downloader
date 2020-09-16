@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from wallpaper_downloader import site_parser
 from bs4 import BeautifulSoup
 

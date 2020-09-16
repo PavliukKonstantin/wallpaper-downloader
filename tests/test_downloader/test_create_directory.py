@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 
 from wallpaper_downloader.downloader import WallpaperDownloader
